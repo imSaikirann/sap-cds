@@ -44,5 +44,16 @@ entity Courses : cuid, managed {
     code:String(5);
     @title:'Description'
     description:String(20);
+     Books: Composition of many{
+        key ID : UUID;
+        book : Association to Books
+    }
    
+}
+
+entity Books : cuid,managed{
+    @title:'Code'
+    code:String(3);
+    @title:'Description'
+    description:String(20);
 }
