@@ -18,14 +18,15 @@ entity Student : cuid,managed {
 
     @title : 'Percentage'
      per: String(10);
-
+     
+    @title:'Course selected'
+    course:Association to Courses;
    
     Subjects : Composition of many{
         key ID : UUID;
         sub : Association to Subjects;
     }
  
-
 }
 
 
@@ -38,3 +39,10 @@ entity Subjects : cuid ,managed{
     
 }
 
+entity Courses : cuid, managed {
+    @title:'Code'
+    code:String(5);
+    @title:'Description'
+    description:String(20);
+   
+}

@@ -8,11 +8,18 @@ service StudentP {
         ID,
         *
     };
+    entity Courses as projection on db.Courses{
+           @UI.Hidden
+        ID,
+        *
+    }
 
 }
 //For Create button
 annotate StudentP.Student with @odata.draft.enabled;
 annotate StudentP.Subjects with @odata.draft.enabled ;
+annotate StudentP.Courses with  @odata.draft.enabled;
+
 
 
 //Student Table annotate
@@ -33,6 +40,11 @@ annotate StudentP.Student with @(
           {
             $Type:'UI.DataField',
             Value:per
+        },
+          {
+            $Type : 'UI.DataField',
+            Label : 'Course Selected',
+            Value : course.code
         },
         {
             $Type : 'UI.DataField',
@@ -59,6 +71,10 @@ annotate StudentP.Student with @(
             $Type:'UI.DataField',
             Value:grade,
         },
+           {
+                $Type: 'UI.DataField',
+                Value: course_ID,
+            },
           {
             $Type:'UI.DataField',
             Value:per,
@@ -144,6 +160,43 @@ annotate StudentP.Subjects with @(
 
 );
 
+//annotation for course table
+annotate StudentP.Courses with @(
+    UI.LineItem: [
+        {
+            Value : code
+        },
+        {
+            Value : description
+        },
+      
+    ],
+     UI.FieldGroup #CourseInformation : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                Value : code,
+            },
+            {
+                Value : description,
+            },
+        ],
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'StudentInfoFacet',
+            Label : 'Student Information',
+            Target : '@UI.FieldGroup#CourseInformation',
+        },
+        
+    ],
+    
+);
+
+
+
+//linking
 annotate StudentP.Student.Subjects with {
     sub @(
         Common.Text: sub.description,
@@ -166,6 +219,35 @@ annotate StudentP.Student.Subjects with {
                     $Type             : 'Common.ValueListParameterDisplayOnly',
                     ValueListProperty : 'description'
                 },
+            ]
+        }
+    );
+}
+
+//for getting dropdown
+annotate StudentP.Student with {
+    course @(
+        Common.Text: course.description,
+        Common.TextArrangement: #TextOnly,
+        Common.ValueListWithFixedValues: true,
+        Common.ValueList : {
+            Label: 'Courses',
+            CollectionPath : 'Courses',
+            Parameters     : [
+                {
+                    $Type             : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : course_ID,
+                    ValueListProperty : 'ID'
+                },
+               
+                {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'code'
+                },
+                   {
+                    $Type             : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty : 'description'
+                }
             ]
         }
     );
